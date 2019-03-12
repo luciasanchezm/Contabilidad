@@ -1,0 +1,61 @@
+import javax.swing.*;
+import javax.swing.border.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class TextField extends JTextField implements FocusListener, KeyListener {
+	
+	Border raised;
+	Border lowered;
+	int Longitud;
+	Component Siguiente;
+	
+	public TextField() {
+		super(30);
+		raised = BorderFactory.createRaisedBevelBorder();
+		lowered = BorderFactory.createLoweredBevelBorder();
+		Longitud = 0;
+		setSelectionColor(new Color(192, 192, 255));
+		setFont(new Font("Times New Roman", Font.PLAIN, 20)); 
+		setBorder(raised);
+		HazEscuchas();
+	}
+	
+	public void HazEscuchas() {
+		addFocusListener(this);
+		addKeyListener(this);
+	}
+	
+	public void setLongitud(int Longitud) {
+		this.Longitud=Longitud;
+	}
+	
+	public void setSiguiente(Component Siguiente) {
+		this.Siguiente=Siguiente;
+	}
+	
+	public void focusGained(FocusEvent Evt) {
+		setBackground(new Color(230, 230, 230));
+		setBorder(lowered);
+	}
+
+	public void focusLost(FocusEvent Evt) {
+		setBackground(new Color(255, 255, 255));
+		setBorder(raised);
+	}
+	
+	public void keyPressed(KeyEvent Evt) {
+		if(Siguiente!= null && Evt.getKeyCode() == KeyEvent.VK_ENTER) {
+			Siguiente.requestFocus();
+			
+			if(Siguiente instanceof JButton) {
+				JButton Aux = (JButton) Siguiente;
+				Aux.doClick();
+			}
+		}
+	}
+
+	public void keyReleased(KeyEvent Evt) {}
+
+	public void keyTyped(KeyEvent Evt) {}
+}
