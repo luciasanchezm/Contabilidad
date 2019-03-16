@@ -5,14 +5,16 @@ public class PolizasModelo {
 	
 	File FCuentas, FPolizas, FIndex;
 	RandomAccessFile ArchCuentas, ArchPolizas, ArchIndex;
-	int NoPoliza;
+	int NoPoliza, UltimaPoliza;
+	boolean BandGrabar;
 	
 	public PolizasModelo(){
 		if(!Abrir()){
 			System.out.println("Error al intentar abrir el archivo");
 			return;
 		}
-		try {		NoPoliza= (int)ArchPolizas.length()/18;		} catch (IOException e) {}
+		try {		UltimaPoliza = NoPoliza= (int)ArchPolizas.length()/18;		} catch (IOException e) {}
+		BandGrabar = false;
 	}
 	private boolean Abrir() {
 		FCuentas=new File("CUENTAS.DAT");
@@ -121,41 +123,54 @@ public class PolizasModelo {
 			ArchPolizas.writeFloat(Importe);							//Importe		float	4
 			ArchPolizas.writeChar(Tipo);								//Tipo			char	2		TOTAL: 18 bytes
 		}
+		BandGrabar=true;
 	}
-	public void Afectar() throws IOException {
-		int lenght = (int) (ArchPolizas.length()/18);
-		int NoReg;
+	public boolean Afectar() throws IOException {
+		if(!BandGrabar)
+			return false;
+		int length = (int) (ArchPolizas.length()/18);
 		String Cuenta;
-		float ImportePolizas, ImporteCuenta, SaldoCuenta;
+		float ImportePolizas;
 		char Tipo;
 		
-		for (int i = 0; i < lenght ; i++) {
+		for (int i = UltimaPoliza; i < length ; i++) {
 			//Leer archivo de PÓLIZAS
 			ArchPolizas.seek(i*18 + 4);
 			Cuenta = ArchPolizas.readUTF();
 			ImportePolizas = ArchPolizas.readFloat();
 			Tipo = ArchPolizas.readChar();
 			
-			//Encontrar el no de registro
-			NoReg = BusquedaBinaria(Cuenta);
+			//Afectar sub-sub-cuenta
+			Afectar(Cuenta, ImportePolizas, Tipo);
 			
-			//Afectar el archivo de CUENTAS
-				//Afectar saldo
-			ArchCuentas.seek((NoReg-1)*54+40);
-			SaldoCuenta = ArchCuentas.readFloat();
-			ArchCuentas.seek((NoReg-1)*54+40);
-			if(Tipo == 'A') {	//Es ABONO
-				ArchCuentas.writeFloat(SaldoCuenta + ImportePolizas);
-				ArchCuentas.seek((NoReg-1)*54+48);
-			}
-			else 				//Es CARGO
-				ArchCuentas.writeFloat(SaldoCuenta - ImportePolizas);
+			//Afectar sub-cuenta
+			Afectar(Cuenta.substring(0, 4), ImportePolizas, Tipo);
 			
-				//Afectar cargos o abonos
-			ImporteCuenta = ArchCuentas.readFloat();
-			ArchCuentas.seek(ArchCuentas.getFilePointer()-4);
-			ArchCuentas.writeFloat(ImporteCuenta + ImportePolizas);
+			//Afectar cuenta
+			Afectar(Cuenta.substring(0,2), ImportePolizas, Tipo);
 		}
+		UltimaPoliza = length;
+		BandGrabar=false;
+		return true;
+	}
+	public void Afectar(String Cuenta, float ImportePolizas, char Tipo) throws IOException {
+		int NoReg;
+		float ImporteCuenta;
+		
+		//Encontrar el no de registro
+		NoReg = BusquedaBinaria(Cuenta);
+		
+		//Afectar el archivo de CUENTAS
+		if(Tipo == 'A') {	//Es ABONO
+			ArchCuentas.seek((NoReg-1)*54+48);
+		}
+		else 				//Es CARGO
+			ArchCuentas.seek((NoReg-1)*54+44);
+		
+			//Afectar cargos o abonos
+		ImporteCuenta = ArchCuentas.readFloat();
+		ArchCuentas.seek(ArchCuentas.getFilePointer()-4);
+		ArchCuentas.writeFloat(ImporteCuenta + ImportePolizas);
 	}
 	public void ImprimirArchivos() throws IOException {
 		int length;

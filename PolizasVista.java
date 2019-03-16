@@ -8,13 +8,15 @@ public class PolizasVista extends JFrame {
 	private PolizasVistaCatalogo Catalogo;
 	PolizasPolizas Polizas;
 	
-	public PolizasVista() {
+	public PolizasVista(PolizasVistaCatalogo Catalogo) {
 		super("CONTABILIDAD");
 		//Edit Frame
 		setSize(600, 600); setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
 		FramePrincipal = new JTabbedPane();
+		
+		setCatalogo(Catalogo);
 	}
 	public void setCatalogo(PolizasVistaCatalogo Catalogo) {
 		this.Catalogo = Catalogo;
@@ -23,6 +25,8 @@ public class PolizasVista extends JFrame {
 		FramePrincipal.add(Rutinas.PonBlancos("PÓLIZAS", 75), Polizas);
 		add(FramePrincipal);
 		setVisible(true);
+		Catalogo.update(Catalogo.getGraphics());
+		FramePrincipal.setFocusable(true);
 		setFocus();
 	}
 	public void setFocus() {
@@ -32,6 +36,9 @@ public class PolizasVista extends JFrame {
 	public void setControlador(PolizasControlador CP, PolizasControladorCatalogo CC) {
 		Catalogo.setControlador(CC);
 		Polizas.setControlador(CP);
+	}
+	public void RemoveFilas() {
+		Catalogo.RemoveFilas();
 	}
 	public void setResultadoAceptar(boolean Band, Vector V) {
 		if(Band)
@@ -49,8 +56,11 @@ public class PolizasVista extends JFrame {
 			Texto = "Error al intentar grabar";
 		JOptionPane.showMessageDialog(this, Texto);
 	}
-	public void setResultadoAfectar() {
-		JOptionPane.showMessageDialog(this, "Afectación exitosa");
+	public void setResultadoAfectar(boolean Band) {
+		if(Band)
+			JOptionPane.showMessageDialog(this, "Afectación exitosa");
+		else
+			JOptionPane.showMessageDialog(this, "No hay nuevas pólizas");
 	}
 	public void setResultadoEditar(boolean Band) {
 		if(Band) {

@@ -11,6 +11,10 @@ public class PolizasControladorCatalogo implements ActionListener{
 	public PolizasControladorCatalogo(PolizasVistaCatalogo Vista, PolizasModeloCatalogo Modelo) {
 		this.Vista = Vista;
 		this.Modelo = Modelo;
+	}
+	
+	public void InicializarConsulta() {
+		Vista.RemoveFilas();
 		Vector filas = null;
 		try {
 			filas = Modelo.InicializaTabla();

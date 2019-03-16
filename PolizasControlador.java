@@ -6,25 +6,19 @@ import javax.swing.*;
 
 public class PolizasControlador implements ActionListener{
 	
-	PolizasVista Vista; 
-	PolizasVistaCatalogo VistaCatalogo;
+	PolizasVista Vista;
 	PolizasModelo Modelo;
 	PolizasModeloCatalogo ModeloCatalogo;
 	PolizasControladorCatalogo ControladorCatalogo;
 	
-	public PolizasControlador(PolizasVista Vista, PolizasModelo Modelo) {
-		ModeloCatalogo = new PolizasModeloCatalogo();
-		VistaCatalogo = new PolizasVistaCatalogo();
-		
+	public PolizasControlador(PolizasVista Vista, PolizasModelo Modelo, PolizasModeloCatalogo ModeloCatalogo, PolizasControladorCatalogo ControladorCatalogo) {
 		this.Vista = Vista;
 		
-		this.Modelo = Modelo;
+		this.Modelo = Modelo;	
 		
-		Vista.setCatalogo(VistaCatalogo);
+		this.ModeloCatalogo = ModeloCatalogo;
 		
-		ControladorCatalogo = new PolizasControladorCatalogo(VistaCatalogo, ModeloCatalogo);
-		setControlador(this, ControladorCatalogo);
-		
+		this.ControladorCatalogo = ControladorCatalogo;
 		
 		try{		Modelo.ImprimirArchivos();		}catch(Exception E) {}
 	}
@@ -100,8 +94,11 @@ public class PolizasControlador implements ActionListener{
 		Vista.setResultadoGrabar(Band);
 	}
 	public void Afectar() {
-		try {		Modelo.Afectar();		} catch (IOException e) {}
-		Vista.setResultadoAfectar();
+		boolean Band = false;
+		try {		Band = Modelo.Afectar();		} catch (IOException e) {}
+		Vista.setResultadoAfectar(Band);
+		ControladorCatalogo.InicializarConsulta();
+		SwingUtilities.updateComponentTreeUI(Vista);
 	}
 	
 	boolean BanderaEditar = false;

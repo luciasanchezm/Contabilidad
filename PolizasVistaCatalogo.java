@@ -36,6 +36,9 @@ public class PolizasVistaCatalogo extends JTabbedPane {
 		Mod.setControlador(C);
 		Baja.setControlador(C);
 	}
+	public void RemoveFilas() {
+		Consulta.filas.removeAllElements();
+	}
 	public void ResultadoRegistro(boolean Bandera) {
 		String Texto;
 		if(Bandera)

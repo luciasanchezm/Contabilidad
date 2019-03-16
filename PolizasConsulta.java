@@ -26,9 +26,8 @@ public class PolizasConsulta extends JPanel {
 	}
 	public void addFila(Vector<String> f) {
 		filas.add(f);
-		System.out.println("1");
-		try{		SwingUtilities.updateComponentTreeUI(TablaScroll);		}catch(Exception E) {System.out.println("JAJA");}	//AQUÍ LANZA EL ERROR
-		System.out.println("2");
+		SwingUtilities.updateComponentTreeUI(TablaScroll);
+		//TablaScroll.update(TablaScroll.getGraphics());
 	}
 	public Vector BuscarFila(String Buscar) {
 		String CuentaAux;
