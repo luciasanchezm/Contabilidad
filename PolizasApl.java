@@ -1,24 +1,24 @@
-import java.io.IOException;
+package Polizas;
 
 public class PolizasApl {
-	PolizasVista Vista;
-	PolizasControlador Controlador;
-	PolizasModelo Modelo;
+	private VistaPrincipal Vista;
+	private ControladorPolizas Controlador;
+	private ModeloPolizas Modelo;
 	
-	private PolizasVistaCatalogo VistaCatalogo; 
-	private PolizasModeloCatalogo ModeloCatalogo;
-	PolizasControladorCatalogo ControladorCatalogo;
+	private VistaCatalogo VistaCatalogo; 
+	private ModeloCatalogo ModeloCatalogo;
+	ControladorCatalogo ControladorCatalogo;
 	
 	public PolizasApl() {
-		VistaCatalogo = new PolizasVistaCatalogo();
-		Vista = new PolizasVista(VistaCatalogo);
+		VistaCatalogo = new VistaCatalogo();
+		Vista = new VistaPrincipal(VistaCatalogo);
 		try {
-			Modelo = new PolizasModelo();
+			Modelo = new ModeloPolizas();
 		} catch (Exception E) {}
-		ModeloCatalogo = new PolizasModeloCatalogo();
+		ModeloCatalogo = new ModeloCatalogo();
 
-		ControladorCatalogo = new PolizasControladorCatalogo(VistaCatalogo, ModeloCatalogo);
-		Controlador = new PolizasControlador(Vista, Modelo, ModeloCatalogo, ControladorCatalogo);
+		ControladorCatalogo = new ControladorCatalogo(VistaCatalogo, ModeloCatalogo);
+		Controlador = new ControladorPolizas(Vista, Modelo, ModeloCatalogo, ControladorCatalogo);
 		Controlador.setControlador(Controlador, ControladorCatalogo);
 		ControladorCatalogo.InicializarConsulta();
 		Vista.update(Vista.getGraphics());

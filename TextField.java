@@ -1,3 +1,5 @@
+package Polizas;
+
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
@@ -5,16 +7,16 @@ import java.awt.event.*;
 
 public class TextField extends JTextField implements FocusListener, KeyListener {
 	
-	Border raised;
-	Border lowered;
-	int Longitud;
-	Component Siguiente;
+	private Border raised;
+	private Border lowered;
+	protected int Longitud;
+	private Component Siguiente;
 	
-	public TextField() {
+	public TextField(int Longitud) {
 		super(30);
 		raised = BorderFactory.createRaisedBevelBorder();
 		lowered = BorderFactory.createLoweredBevelBorder();
-		Longitud = 0;
+		this.Longitud = Longitud;
 		setSelectionColor(new Color(192, 192, 255));
 		setFont(new Font("Times New Roman", Font.PLAIN, 20)); 
 		setBorder(raised);
@@ -24,10 +26,6 @@ public class TextField extends JTextField implements FocusListener, KeyListener 
 	public void HazEscuchas() {
 		addFocusListener(this);
 		addKeyListener(this);
-	}
-	
-	public void setLongitud(int Longitud) {
-		this.Longitud=Longitud;
 	}
 	
 	public void setSiguiente(Component Siguiente) {
@@ -44,18 +42,19 @@ public class TextField extends JTextField implements FocusListener, KeyListener 
 		setBorder(raised);
 	}
 	
-	public void keyPressed(KeyEvent Evt) {
-		if(Siguiente!= null && Evt.getKeyCode() == KeyEvent.VK_ENTER) {
+	public void keyPressed(KeyEvent Evt) {}
+
+	public void keyReleased(KeyEvent Evt) {}
+
+	public void keyTyped(KeyEvent Evt) {
+		if(Siguiente!= null && Evt.getKeyChar() == KeyEvent.VK_ENTER) {
 			Siguiente.requestFocus();
 			
 			if(Siguiente instanceof JButton) {
 				JButton Aux = (JButton) Siguiente;
 				Aux.doClick();
 			}
+			return;
 		}
 	}
-
-	public void keyReleased(KeyEvent Evt) {}
-
-	public void keyTyped(KeyEvent Evt) {}
 }
